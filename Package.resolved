@@ -1,0 +1,69 @@
+{
+  "originHash" : "e206cadae70eec1b5943b343cc5e9d0d2880c2a616743b073685af14fd985ad0",
+  "pins" : [
+    {
+      "identity" : "flyingfox",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swhitty/FlyingFox",
+      "state" : {
+        "branch" : "main",
+        "revision" : "1381625e3ae337903aff573f8fc621e8dd5a6f6d"
+      }
+    },
+    {
+      "identity" : "ink",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JohnSundell/Ink",
+      "state" : {
+        "branch" : "master",
+        "revision" : "bcc9f219900a62c4210e6db726035d7f03ae757b"
+      }
+    },
+    {
+      "identity" : "lilparser.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nakajima/LilParser.swift",
+      "state" : {
+        "branch" : "main",
+        "revision" : "362e1218a2a6958183fbbe14b071d9d17f9954c9"
+      }
+    },
+    {
+      "identity" : "plot",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JohnSundell/Plot",
+      "state" : {
+        "branch" : "master",
+        "revision" : "431c27c9ac97f8bcf6047b5bdbaef91b95a5330b"
+      }
+    },
+    {
+      "identity" : "splash",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JohnSundell/Splash",
+      "state" : {
+        "branch" : "master",
+        "revision" : "2e3f17c2d09689c8bf175c4a84ff7f2ad3353301"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "branch" : "main",
+        "revision" : "7f4ce2deef0560c69fa0462a4e67c311e259ccb2"
+      }
+    },
+    {
+      "identity" : "tomlkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/LebJe/TOMLKit",
+      "state" : {
+        "revision" : "ec6198d37d495efc6acd4dffbd262cdca7ff9b3f",
+        "version" : "0.6.0"
+      }
+    }
+  ],
+  "version" : 3
+}

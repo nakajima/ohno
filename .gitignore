@@ -1,0 +1,5 @@
+gon.hcl
+.build
+*.zip
+/ohno
+.swiftpm
