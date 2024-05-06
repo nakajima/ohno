@@ -18,6 +18,8 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
+    - name: Install gon
+      run: brew install Bearer/tap/gon
     - name: Build
       run: dev/build
     - name: Install the Apple certificate
