@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "libohno",
+    name: "ohno",
     platforms: [.macOS(.v14), .iOS(.v17)],
     products: [
         .executable(
