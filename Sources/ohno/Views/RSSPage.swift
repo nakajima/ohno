@@ -37,7 +37,7 @@ struct RSSPage {
 				.guid(.text(post.permalink)),
 				.title(post.title.replacing(#/`/#, with: "")),
 				.link(post.permalink),
-				.description(post.excerpt ?? ""),
+				.description(post.excerpt),
 				.content(MarkdownDecorator().decorate(post.contents)),
 				.pubDate(post.publishedAt)
 			)

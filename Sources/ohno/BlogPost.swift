@@ -43,7 +43,10 @@ struct BlogPost: Codable, Hashable {
 	let publishedAt: Date
 	let tags: [String]
 
+	var imageCode: String?
+
 	static func from(url: URL, in blog: Blog) throws -> BlogPost {
+		var imageCode = ""
 		let parser = MarkdownParser(modifiers: [
 			.init(target: .headings) { heading in
 				if heading.html.contains("<h1>") {
@@ -52,7 +55,9 @@ struct BlogPost: Codable, Hashable {
 					return heading.html
 				}
 			},
-			.splashCodeBlocks(withFormat: HTMLOutputFormat())
+			.splashCodeBlocks(withFormat: HTMLOutputFormat()) { code in
+				imageCode = code
+			}
 		])
 
 		let markdown = try parser.parse(String(contentsOf: url))
@@ -72,7 +77,8 @@ struct BlogPost: Codable, Hashable {
 			author: markdown.metadata["author"] ?? blog.author ?? "",
 			contents: markdown.html,
 			publishedAt: publishedAt,
-			tags: markdown.metadata["tags", default: ""].split(separator: #/,\s*/#).map(String.init)
+			tags: markdown.metadata["tags", default: ""].split(separator: #/,\s*/#).map(String.init),
+			imageCode: imageCode
 		)
 	}
 
@@ -84,7 +90,8 @@ struct BlogPost: Codable, Hashable {
 		author: String,
 		contents: String,
 		publishedAt: Date,
-		tags: [String]
+		tags: [String],
+		imageCode: String? = nil
 	) {
 		self.blog = blog
 		self.title = title.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
@@ -94,6 +101,7 @@ struct BlogPost: Codable, Hashable {
 		self.contents = contents.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
 		self.publishedAt = publishedAt
 		self.tags = tags
+		self.imageCode = imageCode
 	}
 
 	var permalink: String {

@@ -9,6 +9,7 @@ import FlyingFox
 import Foundation
 import ArgumentParser
 import Plot
+import Splash
 
 struct ServerResponse {
 	var html: String?
@@ -43,6 +44,7 @@ struct ServerResponse {
 	}
 }
 
+// TODO: Should just build the site then serve out of that
 public struct Serve: AsyncParsableCommand {
 	@Option var path: String?
 
@@ -68,6 +70,23 @@ public struct Serve: AsyncParsableCommand {
 			let blogPost = try BlogPost.from(url: blog.local.posts.appending(path: slug + ".md"), in: blog)
 
 			return try await serve(PostPage(post: blogPost), blog: blog)
+		}
+
+		await server.appendRoute("images/*") { req in
+			guard let slug = req.path.split(separator: "/").last else {
+				return try await ServerResponse(blog: blog, html: "Nope", status: .notFound).response()
+			}
+
+			let blogPost = try BlogPost.from(url: blog.local.posts.appending(path: slug + ".md"), in: blog)
+
+			if let code = blogPost.imageCode,
+				 let imageData = try ImageGenerator(code: code).generate(size: .init(width: 600, height: 400), colors: try CSS().themeColors(from: blog.local.style)) {
+				var headers: [HTTPHeader: String] = [:]
+				headers[HTTPHeader.contentType] = "image/png"
+				return HTTPResponse(statusCode: .ok, headers: headers, body: imageData)
+			} else {
+				return try await ServerResponse(blog: blog, html: "Could not generate image.", status: .notFound).response()
+			}
 		}
 
 		await server.appendRoute("tag/*") { req in
