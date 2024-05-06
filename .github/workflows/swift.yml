@@ -48,4 +48,5 @@ jobs:
       env:
         GON_HCL: ${{ secrets.GON_HCL }}
       run: |
-        echo $GON_HCL | gon -
+        echo $GON_HCL > gon.hcl
+        gon gon.hcl
