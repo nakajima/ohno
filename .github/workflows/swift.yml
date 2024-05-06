@@ -53,3 +53,8 @@ jobs:
           AC_APPLICATION_IDENTITY: ${{ secrets.AC_APPLICATION_IDENTITY }}
         run: |
           gon gon.hcl
+      - name: Save artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ohno.zip
+          path: ohno.zip
