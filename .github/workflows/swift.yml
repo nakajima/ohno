@@ -19,7 +19,7 @@ jobs:
       with:
         submodules: recursive
     - name: Build
-      run: bin/build
+      run: dev/build
     - name: Install the Apple certificate
       env:
         P12_BASE64: ${{ secrets.P12_BASE64 }}
