@@ -1,5 +1,5 @@
-import XCTest
 @testable import ohno
+import XCTest
 
 final class ohnoTests: XCTestCase {
     func testExample() throws {

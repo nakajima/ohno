@@ -9,157 +9,157 @@ import Foundation
 import TOMLKit
 
 struct Blog: Codable, Hashable {
-	struct URLs {
-		var baseURL: URL
+    struct URLs {
+        var baseURL: URL
 
-		init(baseURL: URL? = nil) {
-			self.baseURL = baseURL ?? URL(string: "https://example.com")!
-		}
+        init(baseURL: URL? = nil) {
+            self.baseURL = baseURL ?? URL(string: "https://example.com")!
+        }
 
-		var home: URL { baseURL }
-		var feed: URL { baseURL.appending(path: "feed.xml") }
-		var images: URL { baseURL.appending(path: "images") }
-	}
+        var home: URL { baseURL }
+        var feed: URL { baseURL.appending(path: "feed.xml") }
+        var images: URL { baseURL.appending(path: "images") }
+    }
 
-	struct Local {
-		var location: URL
+    struct Local {
+        var location: URL
 
-		var configuration: URL {
-			location.appending(path: "ohno.toml")
-		}
+        var configuration: URL {
+            location.appending(path: "ohno.toml")
+        }
 
-		var posts: URL {
-			location.appending(path: "posts", directoryHint: .isDirectory)
-		}
+        var posts: URL {
+            location.appending(path: "posts", directoryHint: .isDirectory)
+        }
 
-		var build: URL {
-			location.appending(path: "build", directoryHint: .isDirectory)
-		}
+        var build: URL {
+            location.appending(path: "build", directoryHint: .isDirectory)
+        }
 
-		var style: URL {
-			location.appending(path: "style.css")
-		}
+        var style: URL {
+            location.appending(path: "style.css")
+        }
 
-		var footer: URL {
-			location.appending(path: "footer.md")
-		}
+        var footer: URL {
+            location.appending(path: "footer.md")
+        }
 
-		var serve: URL {
-			location.appending(path: ".serve")
-		}
-	}
+        var serve: URL {
+            location.appending(path: ".serve")
+        }
+    }
 
-	enum Error: Swift.Error, CustomStringConvertible {
-		case notInBlog(String)
-		case invalidConfiguration
+    enum Error: Swift.Error, CustomStringConvertible {
+        case notInBlog(String)
+        case invalidConfiguration
 
-		var description: String {
-			return switch self {
-			case let .notInBlog(msg):
-				"Looks like you're not in an ohno blog directory.\nerr: \(msg)".red()
-			case .invalidConfiguration:
-				"Your ohno.toml file looks messed up."
-			}
-		}
-	}
+        var description: String {
+            return switch self {
+            case let .notInBlog(msg):
+                "Looks like you're not in an ohno blog directory.\nerr: \(msg)".red()
+            case .invalidConfiguration:
+                "Your ohno.toml file looks messed up."
+            }
+        }
+    }
 
-	// Where the blog lives on disk
-	var location: URL
+    // Where the blog lives on disk
+    var location: URL
 
-	// Attributes
-	let name: String
-	let about: String?
-	let author: String?
-	let url: String?
-	let lang: String?
+    // Attributes
+    let name: String
+    let about: String?
+    let author: String?
+    let url: String?
+    let lang: String?
 
-	enum CodingKeys: CodingKey {
-		case name, about, author, url, lang
-	}
+    enum CodingKeys: CodingKey {
+        case name, about, author, url, lang
+    }
 
-	init(location: URL, name: String, about: String?, author: String?, url: String?, lang: String?) {
-		self.location = location
-		self.name = name
-		self.about = about
-		self.author = author
-		self.url = url
-		self.lang = lang ?? Locale.current.language.minimalIdentifier
-	}
+    init(location: URL, name: String, about: String?, author: String?, url: String?, lang: String?) {
+        self.location = location
+        self.name = name
+        self.about = about
+        self.author = author
+        self.url = url
+        self.lang = lang ?? Locale.current.language.minimalIdentifier
+    }
 
-	init(from decoder: any Decoder) throws {
-		let container = try decoder.container(keyedBy: CodingKeys.self)
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
-		name = try container.decode(String.self, forKey: .name)
-		about = try container.decodeIfPresent(String.self, forKey: .about)
-		author = try container.decodeIfPresent(String.self, forKey: .author)
-		url = try container.decodeIfPresent(String.self, forKey: .url)
-		lang = try container.decodeIfPresent(String.self, forKey: .lang)
-		location = URL(filePath: FileManager.default.currentDirectoryPath)
-	}
+        name = try container.decode(String.self, forKey: .name)
+        about = try container.decodeIfPresent(String.self, forKey: .about)
+        author = try container.decodeIfPresent(String.self, forKey: .author)
+        url = try container.decodeIfPresent(String.self, forKey: .url)
+        lang = try container.decodeIfPresent(String.self, forKey: .lang)
+        location = URL(filePath: FileManager.default.currentDirectoryPath)
+    }
 
-	var links: URLs {
-		URLs(baseURL: URL(string: url ?? ""))
-	}
+    var links: URLs {
+        URLs(baseURL: URL(string: url ?? ""))
+    }
 
-	var local: Local {
-		Local(location: location)
-	}
+    var local: Local {
+        Local(location: location)
+    }
 
-	static func current(with path: String? = nil) throws -> Blog {
-		let url = if let path {
-			URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: path)
-		} else {
-			URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-		}
+    static func current(with path: String? = nil) throws -> Blog {
+        let url = if let path {
+            URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appending(path: path)
+        } else {
+            URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+        }
 
-		let toml: String
-		do {
-			toml = try String(contentsOf: url.appending(path: "ohno.toml"))
-		} catch {
-			throw Error.notInBlog(error.localizedDescription)
-		}
+        let toml: String
+        do {
+            toml = try String(contentsOf: url.appending(path: "ohno.toml"))
+        } catch {
+            throw Error.notInBlog(error.localizedDescription)
+        }
 
-		var blog: Blog
-		do {
-			blog = try TOMLDecoder().decode(Blog.self, from: toml)
-		} catch {
-			throw Error.invalidConfiguration
-		}
+        var blog: Blog
+        do {
+            blog = try TOMLDecoder().decode(Blog.self, from: toml)
+        } catch {
+            throw Error.invalidConfiguration
+        }
 
-		blog.location = url
+        blog.location = url
 
-		return blog
-	}
+        return blog
+    }
 
-	func save(_ blogPost: BlogPost, filename: String) throws {
-		try? FileManager.default.createDirectory(at: local.posts, withIntermediateDirectories: true)
-		let fileContents = try blogPost.toText()
-		let destination = local.posts.appending(path: "\(posts().count)-\(filename)")
-		try fileContents.write(to: destination, atomically: true, encoding: .utf8)
-	}
+    func save(_ blogPost: BlogPost, filename: String) throws {
+        try? FileManager.default.createDirectory(at: local.posts, withIntermediateDirectories: true)
+        let fileContents = try blogPost.toText()
+        let destination = local.posts.appending(path: "\(posts().count)-\(filename)")
+        try fileContents.write(to: destination, atomically: true, encoding: .utf8)
+    }
 
-	func posts() -> [BlogPost] {
-		guard FileManager.default.fileExists(atPath: local.posts.path) else {
-			return []
-		}
+    func posts() -> [BlogPost] {
+        guard FileManager.default.fileExists(atPath: local.posts.path) else {
+            return []
+        }
 
-		do {
-			let postFiles = try FileManager.default.contentsOfDirectory(at: local.posts, includingPropertiesForKeys: [.nameKey]).filter { $0.pathExtension == "md" }
-			return postFiles.sorted(by: { $0.lastPathComponent > $1.lastPathComponent }).compactMap {
-				do {
-					let post = try BlogPost.from(url: $0, in: self)
+        do {
+            let postFiles = try FileManager.default.contentsOfDirectory(at: local.posts, includingPropertiesForKeys: [.nameKey]).filter { $0.pathExtension == "md" }
+            return postFiles.sorted(by: { $0.lastPathComponent > $1.lastPathComponent }).compactMap {
+                do {
+                    let post = try BlogPost.from(url: $0, in: self)
 
-					if post.publishedAt < Date() {
-						return post
-					}
-				} catch {
-					print("Error loading \($0.lastPathComponent): \(error)")
-				}
+                    if post.publishedAt < Date() {
+                        return post
+                    }
+                } catch {
+                    print("Error loading \($0.lastPathComponent): \(error)")
+                }
 
-				return nil
-			}
-		} catch {
-			return []
-		}
-	}
+                return nil
+            }
+        } catch {
+            return []
+        }
+    }
 }
