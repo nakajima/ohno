@@ -8,12 +8,12 @@
 import Foundation
 import Plot
 
-struct TagPage {
+struct TagPage: WebPage {
 	let blog: Blog
 	let tag: String
 	let posts: [BlogPost]
 
-	var body: Page {
+	var page: Page {
 		Page(title: "Tag: “\(tag)”") {
 			Header {
 				H2 {
@@ -31,7 +31,7 @@ struct TagPage {
 
 			Div {
 				for post in posts {
-					post.row()
+					PostRow(post: post)
 				}
 			}.class("posts")
 		} footer: {

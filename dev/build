@@ -2,3 +2,4 @@
 
 swift build --configuration release --arch arm64
 cp .build/release/ohno .
+gon gon.hcl

@@ -51,9 +51,12 @@ public struct Serve: AsyncParsableCommand {
 		let server = HTTPServer(port: 8080, logger: .print(category: "ohno"))
 		let blog = try Blog.current(with: path)
 
+		@Sendable func serve(_ webpage: any WebPage, blog: Blog) async throws -> HTTPResponse {
+			try await ServerResponse(blog: blog, page: webpage.page).response()
+		}
+
 		await server.appendRoute("") { _ in
-			print("serving /")
-			return try await ServerResponse(blog: blog, page: HomePage(blog: blog).page()).response()
+			return try await serve(HomePage(blog: blog), blog: blog)
 		}
 
 		await server.appendRoute("posts/*") { req in
@@ -64,8 +67,7 @@ public struct Serve: AsyncParsableCommand {
 
 			let blogPost = try BlogPost.from(url: blog.local.posts.appending(path: slug + ".md"), in: blog)
 
-			print("serving /posts/\(blogPost.slug).md")
-			return try await ServerResponse(blog: blog, page: blogPost.page()).response()
+			return try await serve(PostPage(post: blogPost), blog: blog)
 		}
 
 		await server.appendRoute("tag/*") { req in
@@ -74,11 +76,7 @@ public struct Serve: AsyncParsableCommand {
 			}
 
 			let posts = blog.posts().filter { $0.tags.contains(String(tag)) }
-			let page = TagPage(blog: blog, tag: String(tag), posts: posts)
-
-			print("serving /tag/\(tag)")
-
-			return try await ServerResponse(blog: blog, page: page.body).response()
+			return try await serve(TagPage(blog: blog, tag: String(tag), posts: posts), blog: blog)
 		}
 
 		await server.appendRoute("feed.xml") { req in
@@ -87,4 +85,6 @@ public struct Serve: AsyncParsableCommand {
 
 		try await server.start()
 	}
+
+
 }

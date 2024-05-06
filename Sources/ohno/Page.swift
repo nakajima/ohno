@@ -8,6 +8,10 @@
 import Foundation
 import Plot
 
+protocol WebPage {
+	var page: Page { get }
+}
+
 struct Page {
 	var title: String
 	var content: any Component

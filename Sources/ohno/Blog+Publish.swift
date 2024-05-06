@@ -14,7 +14,7 @@ extension Blog {
 
 		for post in posts {
 			try write(post.toText(), to: "posts/\(post.slug).md")
-			try await write(PageGenerator(blog: self, page: post.page()).html().render(), to: "posts/\(post.slug)/index.html")
+			try await write(PageGenerator(blog: self, page: PostPage(post: post).page).html().render(), to: "posts/\(post.slug)/index.html")
 		}
 
 		let postsByTag: [String: [BlogPost]] = posts.reduce(into: [:]) { result, post in
@@ -24,12 +24,12 @@ extension Blog {
 		}
 
 		for (tag, posts) in postsByTag {
-			let page = TagPage(blog: self, tag: tag, posts: posts).body
+			let page = TagPage(blog: self, tag: tag, posts: posts).page
 			let html = try await PageGenerator(blog: self, page: page).html().render()
 			try write(html, to: "tag/\(tag)/index.html")
 		}
 
-		let home = try await PageGenerator(blog: self, page: HomePage(blog: self).page()).html().render()
+		let home = try await PageGenerator(blog: self, page: HomePage(blog: self).page).html().render()
 		try write(home, to: "index.html")
 
 		let feed = RSSPage(self, posts: posts).body.render()

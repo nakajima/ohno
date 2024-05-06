@@ -14,10 +14,10 @@ extension String: Component {
 	}
 }
 
-struct HomePage {
+struct HomePage: WebPage {
 	var blog: Blog
 
-	func page() -> Page {
+	var page: Page {
 		Page(title: blog.name) {
 			H1(
 				Link(url: "/") {
@@ -27,10 +27,10 @@ struct HomePage {
 			.class("subdue")
 
 			Div {
-				
+
 				MarkdownText("---")
 				for post in blog.posts() {
-					post.row()
+					PostRow(post: post)
 					MarkdownText("---")
 				}
 			}.class("posts")
