@@ -47,6 +47,10 @@ jobs:
     - name: Release
       env:
         GON_HCL: ${{ secrets.GON_HCL }}
+        AC_USERNAME: ${{ secrets.AC_USERNAME }}
+        AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
+        AC_PROVIDER: ${{ secrets.AC_PROVIDER }}
+        AC_APPLICATION_IDENTITY: ${{ secrets.AC_APPLICATION_IDENTITY }}
       run: |
         echo $GON_HCL > gon.hcl
         gon gon.hcl
