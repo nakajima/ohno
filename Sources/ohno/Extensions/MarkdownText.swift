@@ -21,9 +21,8 @@ struct MarkdownText: Component {
 		let html = MarkdownParser().parse(markdown).html
 
 		// Get rid of the wrapping P
-		if let parser = try? Parser(html: html).parse().get(),
-			 let paragraph = parser.first(.p) {
-			return paragraph.innerHTML
+		if let parsed = try? Parser(html: html).parse().get() {
+			return parsed.innerHTML
 		} else {
 			return html
 		}

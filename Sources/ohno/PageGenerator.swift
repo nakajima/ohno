@@ -13,8 +13,8 @@ struct PageGenerator {
 	let page: Page
 
 	func html() async throws -> HTML {
-		let customStyles = try? String(contentsOf: blog.styleURL)
-		let customFooter = try? String(contentsOf: blog.footerURL)
+		let customStyles = try? String(contentsOf: blog.local.style)
+		let customFooter = try? String(contentsOf: blog.local.footer)
 
 		return HTML(
 			.attribute(.attribute(named: "lang", value: blog.lang ?? Locale.current.language.minimalIdentifier)),
@@ -31,10 +31,9 @@ struct PageGenerator {
 				.main(
 					.class("container"),
 					page.content.convertToNode(),
-					.hr(),
 					.footer(
 						page.footer.convertToNode(),
-						.raw(customFooter ?? "")
+						MarkdownText(customFooter ?? "").convertToNode()
 					)
 				)
 			)

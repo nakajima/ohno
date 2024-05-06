@@ -1,0 +1,4 @@
+#!/bin/sh
+
+swift build --configuration release --arch arm64
+cp .build/release/ohno .

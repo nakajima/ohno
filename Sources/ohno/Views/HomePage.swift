@@ -20,15 +20,18 @@ struct HomePage {
 	func page() -> Page {
 		Page(title: blog.name) {
 			H1(
-				Link(blog.name, url: "/")
+				Link(url: "/") {
+					MarkdownText(blog.name)
+				}
 			)
 			.class("subdue")
 
 			Div {
-				H5("Blog Posts")
-					.class("posts-header-label")
+				
+				MarkdownText("---")
 				for post in blog.posts() {
 					post.row()
+					MarkdownText("---")
 				}
 			}.class("posts")
 		} footer: {

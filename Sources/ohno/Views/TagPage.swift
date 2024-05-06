@@ -14,14 +14,17 @@ struct TagPage {
 	let posts: [BlogPost]
 
 	var body: Page {
-		Page(title: "Posts tagged “\(tag)”") {
+		Page(title: "Tag: “\(tag)”") {
 			Header {
 				H2 {
-					Link(blog.name, url: "/")
+					Link(url: "/") {
+						MarkdownText(blog.name)
+					}
 				}
-				
+				.class("site-name")
+
 				H1(
-					Link("Posts tagged “\(tag)”", url: "/")
+					Link("Tag: “\(tag)”", url: "/")
 				)
 				.class("subdue")
 			}

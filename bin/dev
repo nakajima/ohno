@@ -1,3 +1,0 @@
-#!/bin/sh
-
-bin/reflex -R "\.build" -r "\.swift" -s -- sh -c 'swift run ohno serve --path demo'

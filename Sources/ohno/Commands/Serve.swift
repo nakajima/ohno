@@ -48,19 +48,23 @@ public struct Serve: AsyncParsableCommand {
 
 	public init() { }
 	public mutating func run() async throws {
-		let server = HTTPServer(port: 8080)
+		let server = HTTPServer(port: 8080, logger: .print(category: "ohno"))
 		let blog = try Blog.current(with: path)
 
 		await server.appendRoute("") { _ in
-			try await ServerResponse(blog: blog, page: HomePage(blog: blog).page()).response()
+			print("serving /")
+			return try await ServerResponse(blog: blog, page: HomePage(blog: blog).page()).response()
 		}
 
 		await server.appendRoute("posts/*") { req in
 			guard let slug = req.path.split(separator: "/").last else {
+				print("not found")
 				return try await ServerResponse(blog: blog, html: "Nope", status: .notFound).response()
 			}
 
-			let blogPost = try BlogPost.from(url: blog.postsURL.appending(path: slug + ".md"), in: blog)
+			let blogPost = try BlogPost.from(url: blog.local.posts.appending(path: slug + ".md"), in: blog)
+
+			print("serving /posts/\(blogPost.slug).md")
 			return try await ServerResponse(blog: blog, page: blogPost.page()).response()
 		}
 
@@ -71,6 +75,9 @@ public struct Serve: AsyncParsableCommand {
 
 			let posts = blog.posts().filter { $0.tags.contains(String(tag)) }
 			let page = TagPage(blog: blog, tag: String(tag), posts: posts)
+
+			print("serving /tag/\(tag)")
+
 			return try await ServerResponse(blog: blog, page: page.body).response()
 		}
 
@@ -81,4 +88,3 @@ public struct Serve: AsyncParsableCommand {
 		try await server.start()
 	}
 }
-

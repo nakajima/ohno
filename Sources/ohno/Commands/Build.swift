@@ -11,6 +11,6 @@ import ArgumentParser
 public struct Build: AsyncParsableCommand {
 	public init() { }
 	public mutating func run() async throws {
-		try await Blog.current().publish()
+		try await Blog.current().build()
 	}
 }

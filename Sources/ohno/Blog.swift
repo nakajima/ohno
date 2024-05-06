@@ -9,14 +9,49 @@ import Foundation
 import TOMLKit
 
 struct Blog: Codable, Hashable {
+	struct URLs {
+		var baseURL: URL
+
+		init(baseURL: URL? = nil) {
+			self.baseURL = baseURL ?? URL(string: "https://example.com")!
+		}
+
+		var home: URL { baseURL }
+		var feed: URL { baseURL.appending(path: "feed.xml") }
+	}
+
+	struct Local {
+		var location: URL
+
+		var configuration: URL {
+			location.appending(path: "ohno.toml")
+		}
+
+		var posts: URL {
+			location.appending(path: "posts", directoryHint: .isDirectory)
+		}
+
+		var build: URL {
+			location.appending(path: "build", directoryHint: .isDirectory)
+		}
+
+		var style: URL {
+			location.appending(path: "style.css")
+		}
+
+		var footer: URL {
+			location.appending(path: "footer.md")
+		}
+	}
+
 	enum Error: Swift.Error, CustomStringConvertible {
-		case notInBlog
+		case notInBlog(String)
 		case invalidConfiguration
 
 		var description: String {
 			return switch self {
-			case .notInBlog:
-				"Looks like you're not in an ohno blog directory.".red()
+			case let .notInBlog(msg):
+				"Looks like you're not in an ohno blog directory.\nerr: \(msg)".red()
 			case .invalidConfiguration:
 				"Your ohno.toml file looks messed up."
 			}
@@ -43,7 +78,7 @@ struct Blog: Codable, Hashable {
 		self.about = about
 		self.author = author
 		self.url = url
-		self.lang = lang
+		self.lang = lang ?? Locale.current.language.minimalIdentifier
 	}
 
 	init(from decoder: any Decoder) throws {
@@ -57,24 +92,12 @@ struct Blog: Codable, Hashable {
 		location = URL(filePath: FileManager.default.currentDirectoryPath)
 	}
 
-	var configurationURL: URL {
-		location.appending(path: "ohno.toml")
+	var links: URLs {
+		URLs(baseURL: URL(string: url ?? ""))
 	}
 
-	var postsURL: URL {
-		location.appending(path: "posts", directoryHint: .isDirectory)
-	}
-
-	var publishURL: URL {
-		location.appending(path: "publish", directoryHint: .isDirectory)
-	}
-
-	var styleURL: URL {
-		location.appending(path: "style.css")
-	}
-
-	var footerURL: URL {
-		location.appending(path: "footer.html")
+	var local: Local {
+		Local(location: location)
 	}
 
 	static func current(with path: String? = nil) throws -> Blog {
@@ -88,7 +111,7 @@ struct Blog: Codable, Hashable {
 		do {
 			toml = try String(contentsOf: url.appending(path: "ohno.toml"))
 		} catch {
-			throw Error.notInBlog
+			throw Error.notInBlog(error.localizedDescription)
 		}
 
 		var blog: Blog
@@ -104,21 +127,31 @@ struct Blog: Codable, Hashable {
 	}
 
 	func save(_ blogPost: BlogPost, filename: String) throws {
-		try? FileManager.default.createDirectory(at: postsURL, withIntermediateDirectories: true)
+		try? FileManager.default.createDirectory(at: local.posts, withIntermediateDirectories: true)
 		let fileContents = try blogPost.toText()
-		let destination = postsURL.appending(path: "\(posts().count)-\(filename)")
+		let destination = local.posts.appending(path: "\(posts().count)-\(filename)")
 		try fileContents.write(to: destination, atomically: true, encoding: .utf8)
 	}
 
 	func posts() -> [BlogPost] {
-		guard FileManager.default.fileExists(atPath: postsURL.path) else {
+		guard FileManager.default.fileExists(atPath: local.posts.path) else {
 			return []
 		}
 
 		do {
-			let postFiles = try FileManager.default.contentsOfDirectory(at: postsURL, includingPropertiesForKeys: [.nameKey]).filter { $0.pathExtension == "md" }
-			return postFiles.sorted(by: { $0.lastPathComponent > $1.lastPathComponent }).map {
-				try! BlogPost.from(url: $0, in: self)
+			let postFiles = try FileManager.default.contentsOfDirectory(at: local.posts, includingPropertiesForKeys: [.nameKey]).filter { $0.pathExtension == "md" }
+			return postFiles.sorted(by: { $0.lastPathComponent > $1.lastPathComponent }).compactMap {
+				do {
+					let post = try BlogPost.from(url: $0, in: self)
+
+					if post.publishedAt < Date() {
+						return post
+					}
+				} catch {
+					print("Error loading \($0.lastPathComponent): \(error)")
+				}
+
+				return nil
 			}
 		} catch {
 			return []

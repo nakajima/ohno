@@ -1,26 +1,28 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Pat Nakajima on 5/4/24.
 //
 
 import Foundation
-import TOMLKit
-import Splash
 import Ink
 import LilParser
+import Splash
+import Typographizer
+import TOMLKit
 
 extension Markdown {
-	var excerpt: String? {
+	var excerpt: String {
 		metadata["excerpt"] ?? {
 			let parser = Parser(html: html)
 			if let parsed = try? parser.parse().get(),
-				 let firstParagraph = parsed.first(.p),
-				 let content = firstParagraph.textContent.presence {
+			   let firstParagraph = parsed.first(.p),
+			   let content = firstParagraph.textContent.presence
+			{
 				return content
 			} else {
-				return nil
+				return ""
 			}
 		}()
 	}
@@ -32,11 +34,12 @@ struct BlogPost: Codable, Hashable {
 	}
 
 	let blog: Blog
-	let title: String
-	let excerpt: String?
+	var title: String
+	var excerpt: String
+	var contents: String
+
 	let slug: String
 	let author: String?
-	let contents: String
 	let publishedAt: Date
 	let tags: [String]
 
@@ -52,7 +55,6 @@ struct BlogPost: Codable, Hashable {
 			.splashCodeBlocks(withFormat: HTMLOutputFormat())
 		])
 
-
 		let markdown = try parser.parse(String(contentsOf: url))
 
 		let dateFormatter = DateFormatter()
@@ -67,11 +69,31 @@ struct BlogPost: Codable, Hashable {
 			title: markdown.title ?? markdown.metadata["title"] ?? url.lastPathComponent,
 			excerpt: markdown.excerpt,
 			slug: url.deletingPathExtension().lastPathComponent,
-			author: markdown.metadata["author"],
+			author: markdown.metadata["author"] ?? blog.author ?? "",
 			contents: markdown.html,
 			publishedAt: publishedAt,
 			tags: markdown.metadata["tags", default: ""].split(separator: #/,\s*/#).map(String.init)
 		)
+	}
+
+	init(
+		blog: Blog,
+		title: String,
+		excerpt: String,
+		slug: String,
+		author: String,
+		contents: String,
+		publishedAt: Date,
+		tags: [String]
+	) {
+		self.blog = blog
+		self.title = title.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
+		self.excerpt = excerpt.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
+		self.slug = slug
+		self.author = author
+		self.contents = contents.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
+		self.publishedAt = publishedAt
+		self.tags = tags
 	}
 
 	var permalink: String {

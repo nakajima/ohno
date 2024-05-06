@@ -1,13 +1,13 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Pat Nakajima on 5/4/24.
 //
 
 import Foundation
-import Splash
 import Plot
+import Splash
 
 extension BlogPost {
 	var opengraph: OpenGraph {
@@ -30,7 +30,7 @@ extension BlogPost {
 				}
 			}
 
-			if let excerpt {
+			if let excerpt = excerpt.presence {
 				Paragraph {
 					MarkdownText(excerpt)
 				}
@@ -45,19 +45,22 @@ extension BlogPost {
 	func page() -> Page {
 		Page(title: title, opengraph: opengraph) {
 			H2 {
-				Link(blog.name, url: "/")
+				Link(url: "/") {
+					MarkdownText(blog.name)
+				}
 			}
+			.class("site-name")
 
 			Article {
 				H1 {
 					MarkdownText(title)
 				}
-				
+
 				ComponentGroup(html: MarkdownDecorator().decorate(contents))
 			}
 		} footer: {
 			Paragraph {
-				Text("Posted")
+				Text("Posted ")
 
 				Time(datetime: publishedAt.formatted(.iso8601)) {
 					Text(publishedAt.formatted(date: .abbreviated, time: .omitted))
@@ -66,11 +69,13 @@ extension BlogPost {
 				if !tags.isEmpty {
 					Text(" in ")
 					for tag in tags {
-						Link(tag, url: "/tag/\(tag)")
+						Link(tag, url: "/tag/\(tag.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)")
 							.class("tag")
 					}
 				}
 			}
+
+			MarkdownText("---")
 		}
 	}
 }

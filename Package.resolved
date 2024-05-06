@@ -1,5 +1,5 @@
 {
-  "originHash" : "e206cadae70eec1b5943b343cc5e9d0d2880c2a616743b073685af14fd985ad0",
+  "originHash" : "1d4627561df280d3f8af2c51fedd8118cc3a27eb7ce693da774eeab9f1f9c6be",
   "pins" : [
     {
       "identity" : "flyingfox",
@@ -62,6 +62,15 @@
       "state" : {
         "revision" : "ec6198d37d495efc6acd4dffbd262cdca7ff9b3f",
         "version" : "0.6.0"
+      }
+    },
+    {
+      "identity" : "typographizer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nakajima/Typographizer",
+      "state" : {
+        "branch" : "main",
+        "revision" : "9e8926072ccfa39fb9a7c07d35a1c8e2c1bec919"
       }
     }
   ],

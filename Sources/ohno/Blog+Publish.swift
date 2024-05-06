@@ -9,7 +9,7 @@ import Foundation
 import Plot
 
 extension Blog {
-	func publish() async throws {
+	func build() async throws {
 		let posts = posts()
 
 		for post in posts {
@@ -31,10 +31,13 @@ extension Blog {
 
 		let home = try await PageGenerator(blog: self, page: HomePage(blog: self).page()).html().render()
 		try write(home, to: "index.html")
+
+		let feed = RSSPage(self, posts: posts).body.render()
+		try write(feed, to: "feed.xml")
 	}
 
 	private func write(_ contents: String, to path: String) throws {
-		try? FileManager.default.createDirectory(at: publishURL.appending(path: path).deletingLastPathComponent(), withIntermediateDirectories: true)
-		try contents.write(to: publishURL.appending(path: path), atomically: true, encoding: .utf8)
+		try? FileManager.default.createDirectory(at: local.build.appending(path: path).deletingLastPathComponent(), withIntermediateDirectories: true)
+		try contents.write(to: local.build.appending(path: path), atomically: true, encoding: .utf8)
 	}
 }

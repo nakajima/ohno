@@ -35,7 +35,7 @@ public struct Init: ParsableCommand {
 		let encoded = try TOMLEncoder().encode(blog) + "\n"
 		
 		try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
-		try encoded.write(to: blog.configurationURL, atomically: true, encoding: .utf8)
+		try encoded.write(to: blog.local.configuration, atomically: true, encoding: .utf8)
 
 		print("Heck yea, made your blog.".cyan().bold())
 		print("cd \(destination.lastPathComponent)".bold() + " to get started.")

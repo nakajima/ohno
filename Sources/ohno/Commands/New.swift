@@ -18,9 +18,9 @@ public struct New: ParsableCommand {
 		let newPost = BlogPost(
 			blog: blog,
 			title: title,
-			excerpt: nil,
+			excerpt: "",
 			slug: title.slugified(),
-			author: blog.author,
+			author: blog.author ?? "who am i",
 			contents: "Here's a new post.",
 			publishedAt: Date(),
 			tags: []
