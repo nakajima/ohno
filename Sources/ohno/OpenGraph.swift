@@ -10,6 +10,7 @@ import Plot
 
 struct OpenGraph {
 	let title: String
+	let imageURL: String?
 	let articleAuthor: String?
 	let url: String
 	let description: String?
@@ -24,6 +25,10 @@ struct OpenGraph {
 			.meta(.property("og:url"), .content(url)),
 			.meta(.property("og:site_name"), .content(siteName)),
 		]
+
+		if let imageURL {
+			nodes.append(.meta(.property("og:image"), .content(imageURL)))
+		}
 
 		if let description {
 			nodes.append(.meta(.property("og:description"), .content(description)))

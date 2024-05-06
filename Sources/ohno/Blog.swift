@@ -18,6 +18,7 @@ struct Blog: Codable, Hashable {
 
 		var home: URL { baseURL }
 		var feed: URL { baseURL.appending(path: "feed.xml") }
+		var images: URL { baseURL.appending(path: "images") }
 	}
 
 	struct Local {
@@ -41,6 +42,10 @@ struct Blog: Codable, Hashable {
 
 		var footer: URL {
 			location.appending(path: "footer.md")
+		}
+
+		var serve: URL {
+			location.appending(path: ".serve")
 		}
 	}
 

@@ -11,6 +11,7 @@ extension BlogPost {
 	var opengraph: OpenGraph {
 		OpenGraph(
 			title: title,
+			imageURL: hasImage ? blog.links.images.appending(path: "\(slug).png").absoluteString : nil,
 			articleAuthor: author,
 			url: permalink,
 			description: excerpt,

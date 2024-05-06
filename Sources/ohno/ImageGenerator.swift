@@ -9,6 +9,8 @@ import Cocoa
 import Foundation
 import ImageIO
 import Splash
+import SwiftUI
+import UniformTypeIdentifiers
 
 typealias HexColor = String
 
@@ -41,22 +43,26 @@ struct ImageGenerator {
 	var code: String
 
 	init(code: String) {
-		self.code = code.replacing(#/^\t/#, with: "  ")
+		self.code = code.replacing(#/(\t*)/#) { match in
+			return Array(repeating: "  ", count: match.output.1.count).joined()
+		}
 	}
 
-	func generate(size: CGSize, colors: [TokenType: HexColor], padding: CGFloat = 12) throws -> Data? {
+	@MainActor func generate(colors: [TokenType: HexColor], padding: CGFloat = 12) throws -> Data? {
 		guard let fontURL = Bundle.module.url(forResource: "SF-Mono-Regular", withExtension: "otf") else {
 			return nil
 		}
 
-		var tokenColors: [TokenType: Color] = [:]
+		guard let code = self.code.presence else {
+			return nil
+		}
+
+		var tokenColors: [TokenType: Splash.Color] = [:]
 		for (token, hexString) in colors {
 			tokenColors[token] = color(from: hexString)
 		}
 
-		print(colors)
-
-		let font = Font(path: fontURL.path, size: CGFloat(12))
+		let font = Font(path: fontURL.path, size: CGFloat(8))
 		let theme = Theme(font: font, plainTextColor: .white, tokenColors: tokenColors)
 		let outputFormat = AttributedStringOutputFormat(theme: theme)
 
@@ -64,7 +70,6 @@ struct ImageGenerator {
 		let string = highlighter.highlight(code)
 
 		let stringSize = string.size()
-
 		let contextRect = CGRect(
 			x: 0,
 			y: 0,
@@ -72,32 +77,50 @@ struct ImageGenerator {
 			height: stringSize.height + padding * 2
 		)
 
-		let context = NSGraphicsContext(size: contextRect.size)
-		NSGraphicsContext.current = context
+		let view = Text(AttributedString(string))
+			.frame(width: stringSize.width + padding * 2, height: stringSize.height + padding * 2)
+			.background(SwiftUI.Color(theme.backgroundColor))
 
-		context.fill(with: theme.backgroundColor, in: contextRect)
+		let image = ImageRenderer(content: view)
+		image.proposedSize = .init(contextRect.size)
+		image.scale = 3.0
+		image.isOpaque = true
 
-		string.draw(in: CGRect(
-			x: padding,
-			y: padding,
-			width: stringSize.width,
-			height: stringSize.height
-		))
+		guard let nsImage = image.nsImage,
+					let tiffRepresentation = nsImage.tiffRepresentation,
+					let imageRep = NSBitmapImageRep(data: tiffRepresentation),
+					let pngData = imageRep.representation(using: .png, properties: [:]) else {
+			return nil
+		}
 
-		let image = context.cgContext.makeImage()!
-		let url = URL.temporaryDirectory.appending(path: UUID().uuidString)
-
-		let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypePNG, 1, nil)!
-		CGImageDestinationAddImage(destination, image, nil)
-		CGImageDestinationFinalize(destination)
-
-		let data = try Data(contentsOf: url)
-		try FileManager.default.removeItem(at: url)
-
-		return data
+		return pngData
+//
+//		let context = NSGraphicsContext(size: contextRect.size)
+//		NSGraphicsContext.current = context
+//
+//		context.fill(with: theme.backgroundColor, in: contextRect)
+//
+//		string.draw(in: CGRect(
+//			x: padding,
+//			y: padding,
+//			width: stringSize.width,
+//			height: stringSize.height
+//		))
+//
+//		let image = context.cgContext.makeImage()!
+//		let url = URL.temporaryDirectory.appending(path: UUID().uuidString)
+//
+//		let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypePNG, 1, nil)!
+//		CGImageDestinationAddImage(destination, image, nil)
+//		CGImageDestinationFinalize(destination)
+//
+//		let data = try Data(contentsOf: url)
+//		try FileManager.default.removeItem(at: url)
+//
+//		return data
 	}
 
-	private func color(from hex: HexColor) -> Color? {
+	private func color(from hex: HexColor) -> Splash.Color? {
 		let r, g, b, a: CGFloat
 
 

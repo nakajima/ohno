@@ -104,6 +104,14 @@ struct BlogPost: Codable, Hashable {
 		self.imageCode = imageCode
 	}
 
+	var hasImage: Bool {
+		guard let imageCode else {
+			return false
+		}
+
+		return !imageCode.isBlank
+	}
+
 	var permalink: String {
 		guard let url = blog.url, let url = URL(string: url) else {
 			return "/" + slug
