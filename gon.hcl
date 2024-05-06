@@ -1,4 +1,4 @@
-source = ["./ohno", "./ohno_ohno.bundle"]
+source = ["./ohno"]
 bundle_id = "fm.folder.ohno"
 
 sign {
