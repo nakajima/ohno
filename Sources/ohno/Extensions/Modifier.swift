@@ -15,6 +15,7 @@ public extension Modifier {
 
 		return Modifier(target: .codeBlocks) { html, markdown in
 			let isImage = markdown.contains("!image!")
+			let isHiddenImage = markdown.contains("!hidden!")
 			var markdown = markdown.dropFirst("```".count)
 
 			guard !markdown.hasPrefix("no-highlight") else {
@@ -28,6 +29,10 @@ public extension Modifier {
 
 			if isImage {
 				didFindImage(String(markdown))
+
+				if isHiddenImage {
+					return ""
+				}
 			}
 
 			let highlighted = highlighter.highlight(String(markdown))

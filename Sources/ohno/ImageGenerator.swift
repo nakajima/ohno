@@ -90,7 +90,7 @@ struct ImageGenerator {
 
 		let image = ImageRenderer(content: view)
 		image.proposedSize = .init(contextRect.size)
-		image.scale = 3.0
+		image.scale = 4.0
 		image.isOpaque = true
 
 		guard let nsImage = image.nsImage,
