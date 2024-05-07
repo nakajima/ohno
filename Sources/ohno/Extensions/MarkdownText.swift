@@ -11,24 +11,24 @@ import LilParser
 import Plot
 
 struct MarkdownText: Component {
-    var markdown: String
+	var markdown: String
 
-    init(_ markdown: String) {
-        self.markdown = markdown
-    }
+	init(_ markdown: String) {
+		self.markdown = markdown
+	}
 
-    var html: String {
-        let html = MarkdownParser().parse(markdown).html
+	var html: String {
+		let html = MarkdownParser().parse(markdown).html
 
-        // Get rid of the wrapping P
-        if let parsed = try? Parser(html: html).parse().get() {
-            return parsed.innerHTML
-        } else {
-            return html
-        }
-    }
+		// Get rid of the wrapping P
+		if let parsed = try? Parser(html: html).parse().get() {
+			return parsed.innerHTML
+		} else {
+			return html
+		}
+	}
 
-    var body: any Component {
-        ComponentGroup(html: html)
-    }
+	var body: any Component {
+		ComponentGroup(html: html)
+	}
 }
