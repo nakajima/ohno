@@ -58,8 +58,11 @@ struct BlogBuilder {
 
 		let siteMap = SiteMapPage(urls: builtPages)
 		try write(siteMap.body, to: "sitemap.xml")
-
 		try write(Robots(blog: blog).body, to: "robots.txt")
+
+		if let customCSS = try? String(contentsOf: blog.local.style) {
+			try write(customCSS, to: "style.css")
+		}
 	}
 
 	private func write(_ contents: Data, to path: String) throws {
