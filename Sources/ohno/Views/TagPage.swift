@@ -13,32 +13,32 @@ struct TagPage: WebPage {
 	let tag: String
 	let posts: [BlogPost]
 
-	var page: Page {
-		Page(title: "Tag: “\(tag)”") {
-			Header {
-				H2 {
-					Link(url: "/") {
-						MarkdownText(blog.name)
-					}
-				}
-				.class("site-name")
+	var title: String { "Tag: “\(tag)”" }
 
-				H1(
-					Link(url: "/") {
-						Span("Tag: ").class("subdue")
-						Text("“\(tag)”")
-					}
-				)
+	func content() -> some Component {
+		Header {
+			H2 {
+				Link(url: "/") {
+					MarkdownText(blog.name)
+				}
+			}
+			.class("site-name")
+
+			H1(
+				Link(url: "/") {
+					Span("Tag: ").class("subdue")
+					Text("“\(tag)”")
+				}
+			)
+		}
+
+		MarkdownText("---")
+		Div {
+			for post in posts {
+				PostRow(post: post)
+				MarkdownText("---")
 			}
 
-			MarkdownText("---")
-			Div {
-				for post in posts {
-					PostRow(post: post)
-					MarkdownText("---")
-				}
-
-			}.class("posts")
-		} footer: {}
+		}.class("posts")
 	}
 }

@@ -31,7 +31,7 @@ struct OpenGraph {
 		}
 
 		if let description {
-			nodes.append(.meta(.property("og:description"), .content(description)))
+			nodes.append(.meta(.name("og:description"), .content(description)))
 		}
 
 		if let articleAuthor {

@@ -8,38 +8,114 @@
 import Foundation
 import Plot
 
+extension Never: Component {
+	public var body: any Plot.Component {
+		EmptyComponent()
+	}
+}
+
 protocol WebPage {
-	var page: Page { get }
+	associatedtype Content: Component
+	associatedtype Footer: Component
+
+	var title: String { get }
+	var opengraph: OpenGraph? { get }
+	@ComponentBuilder func content() -> Content
+	@ComponentBuilder func head() -> [Node<HTML.HeadContext>]
+	@ComponentBuilder func footer() -> Footer?
 }
 
-struct Page {
-	var title: String
-	var content: any Component
-	var footer: any Component
-	var opengraph: OpenGraph?
+// Default conformances
+extension WebPage {
+	var opengraph: OpenGraph? { nil }
 
-	init() {
-		self.title = ""
-		self.content = Text("")
-		self.footer = Text("")
+	func head() -> [Node<HTML.HeadContext>] {
+		[]
 	}
 
-	init(title: String, opengraph: OpenGraph? = nil, header _: any Component, content: any Component, footer: any Component) {
-		self.title = title
-		self.content = content
-		self.footer = footer
-		self.opengraph = opengraph
+	func content() -> some Component {
+		Text("")
 	}
 
-	init(
-		title: String,
-		opengraph: OpenGraph? = nil,
-		@ComponentBuilder content: () -> any Component,
-		@ComponentBuilder footer: () -> any Component
-	) {
-		self.title = title
-		self.content = content()
-		self.footer = footer()
-		self.opengraph = opengraph
+	func footer() -> Never? {
+		nil
 	}
 }
+
+// Render
+extension WebPage {
+	func render(in blog: Blog, indentedBy indentationKind: Indentation.Kind? = nil) async throws -> String {
+		try await PageGenerator(blog: blog, page: self).html().render(indentedBy: indentationKind)
+	}
+}
+
+//
+// struct Page<Content: Component, Footer: Component, Header: Component> {
+//	var title: String
+//	var content: Content
+//	var footer: Footer?
+//	var head: Header?
+//	var opengraph: OpenGraph?
+//
+//	init(title: String, opengraph: OpenGraph? = nil, header: Header, content: Content, footer: Footer) {
+//		self.title = title
+//		self.content = content
+//		self.footer = footer
+//		self.opengraph = opengraph
+//	}
+//
+//	init(
+//		title: String,
+//		opengraph: OpenGraph? = nil,
+//		@ComponentBuilder content: () -> Content,
+//		@ComponentBuilder footer: () -> Footer,
+//		@ComponentBuilder head: () -> Header
+//	) {
+//		self.title = title
+//		self.content = content()
+//		self.footer = footer()
+//		self.head = head()
+//		self.opengraph = opengraph
+//	}
+// }
+//
+// extension Page where Header == Never, Footer == Never {
+//	init(
+//		title: String,
+//		opengraph: OpenGraph? = nil,
+//		@ComponentBuilder content: () -> Content
+//	) {
+//		self.title = title
+//		self.content = content()
+//		self.opengraph = opengraph
+//	}
+// }
+//
+// extension Page where Header == Never {
+//	init(
+//		title: String,
+//		opengraph: OpenGraph? = nil,
+//		@ComponentBuilder content: () -> Content,
+//		@ComponentBuilder footer: () -> Footer
+//	) {
+//		self.title = title
+//		self.content = content()
+//		self.footer = footer()
+//		self.opengraph = opengraph
+//	}
+// }
+//
+//
+// extension Page where Footer == Never {
+//	init(
+//		title: String,
+//		opengraph: OpenGraph? = nil,
+//		@ComponentBuilder content: () -> Content,
+//		@ComponentBuilder head: () -> Header
+//	) {
+//		self.title = title
+//		self.content = content()
+//		self.head = head()
+//		self.opengraph = opengraph
+//	}
+// }

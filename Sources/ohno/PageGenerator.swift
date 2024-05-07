@@ -8,7 +8,7 @@
 import Foundation
 import Plot
 
-struct HeadGenerator {
+struct HeadGenerator<Page: WebPage> {
 	var blog: Blog
 	var page: Page
 
@@ -25,6 +25,10 @@ struct HeadGenerator {
 			.title(page.title),
 		]
 
+		if FileManager.default.fileExists(atPath: blog.local.public.appending(path: "favicon.png").path) {
+			nodes.append(.link(.rel(.icon), .href("/favicon.png")))
+		}
+
 		if FileManager.default.fileExists(atPath: blog.local.style.path()) {
 			nodes.append(.link(.rel(.stylesheet), .href("/style.css")))
 		}
@@ -37,7 +41,7 @@ struct HeadGenerator {
 	}
 }
 
-struct PageGenerator {
+struct PageGenerator<Page: WebPage> {
 	let blog: Blog
 	let page: Page
 
@@ -52,9 +56,9 @@ struct PageGenerator {
 			.body(
 				.main(
 					.class("container"),
-					page.content.convertToNode(),
+					page.content().convertToNode(),
 					.footer(
-						page.footer.convertToNode(),
+						page.footer().convertToNode(),
 						MarkdownText(customFooter ?? "").convertToNode()
 					)
 				)

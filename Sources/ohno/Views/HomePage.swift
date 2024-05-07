@@ -17,8 +17,28 @@ extension String: Component {
 struct HomePage: WebPage {
 	var blog: Blog
 
-	var page: Page {
-		Page(title: blog.name) {
+	var title: String { blog.name }
+
+	var opengraph: OpenGraph? {
+		var imageURL: String?
+		if FileManager.default.fileExists(atPath: blog.local.public.appending(path: "site.png").path) {
+			imageURL = "/site.png"
+		}
+
+		return .init(
+			title: blog.name,
+			imageURL: imageURL,
+			articleAuthor: blog.author,
+			url: blog.url ?? "https://example.com",
+			description: blog.about,
+			siteName: blog.name,
+			publishedAt: blog.posts().first?.publishedAt,
+			tags: []
+		)
+	}
+
+	func content() -> some Component {
+		Div {
 			H1(
 				Link(url: "/") {
 					MarkdownText(blog.name)
@@ -32,6 +52,6 @@ struct HomePage: WebPage {
 					MarkdownText("---")
 				}
 			}.class("posts")
-		} footer: {}
+		}
 	}
 }

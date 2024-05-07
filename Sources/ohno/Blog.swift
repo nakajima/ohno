@@ -56,6 +56,10 @@ struct Blog: Codable, Hashable {
 		var serve: URL {
 			location.appending(path: ".serve")
 		}
+
+		var `public`: URL {
+			location.appending(path: "public")
+		}
 	}
 
 	enum Error: Swift.Error, CustomStringConvertible {

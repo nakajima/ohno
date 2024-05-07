@@ -27,7 +27,7 @@ struct BlogBuilder {
 
 		for post in posts {
 			try write(post.toText(), to: "posts/\(post.slug).md")
-			try await write(PageGenerator(blog: blog, page: PostPage(post: post).page).html().render(), to: "posts/\(post.slug)/index.html")
+			try await write(PostPage(post: post).render(in: blog), to: "posts/\(post.slug)/index.html")
 			built(url: post.permalink, updatedAt: post.publishedAt, changeFrequency: .monthly, priority: 0.7)
 
 			if let code = post.imageCode, let imageData = try await ImageGenerator(code: code).generate(colors: CSS().themeColors(from: blog.local.style)) {
@@ -42,13 +42,12 @@ struct BlogBuilder {
 		}
 
 		for (tag, posts) in postsByTag {
-			let page = TagPage(blog: blog, tag: tag, posts: posts).page
-			let html = try await PageGenerator(blog: blog, page: page).html().render()
+			let html = try await TagPage(blog: blog, tag: tag, posts: posts).render(in: blog)
 			try write(html, to: "tag/\(tag)/index.html")
 			built(url: blog.links.tag(tag).absoluteString, updatedAt: posts.first?.publishedAt ?? Date(), changeFrequency: .weekly, priority: 0.3)
 		}
 
-		let home = try await PageGenerator(blog: blog, page: HomePage(blog: blog).page).html().render()
+		let home = try await HomePage(blog: blog).render(in: blog).render()
 		try write(home, to: "index.html")
 		built(url: blog.links.home.absoluteString, updatedAt: posts.first?.publishedAt ?? Date(), changeFrequency: .weekly, priority: 1)
 
@@ -62,6 +61,19 @@ struct BlogBuilder {
 
 		if let customCSS = try? String(contentsOf: blog.local.style) {
 			try write(customCSS, to: "style.css")
+		}
+
+		if FileManager.default.fileExists(atPath: blog.local.public.path) {
+			for item in try FileManager.default.contentsOfDirectory(atPath: blog.local.public.path) {
+				if item == ".DS_Store" { continue }
+
+				let publicFile = blog.local.public.appending(path: item)
+				do {
+					try FileManager.default.copyItem(at: publicFile, to: destination.appending(path: item))
+				} catch {
+					print("\(error.localizedDescription)".yellow().dim())
+				}
+			}
 		}
 	}
 
