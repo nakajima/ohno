@@ -19,6 +19,11 @@ struct Blog: Codable, Hashable {
 		var home: URL { baseURL }
 		var feed: URL { baseURL.appending(path: "feed.xml") }
 		var images: URL { baseURL.appending(path: "images") }
+		var sitemap: URL { baseURL.appending(path: "sitemap.xml") }
+
+		func tag(_ tag: String) -> URL {
+			baseURL.appending(path: "tag/\(tag)")
+		}
 	}
 
 	struct Local {
