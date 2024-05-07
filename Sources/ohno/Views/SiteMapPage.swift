@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  SiteMapPage.swift
+//
 //
 //  Created by Pat Nakajima on 5/6/24.
 //
@@ -24,12 +24,12 @@ struct SiteMapPage {
 
 	var urlNodes: [Node<SiteMap.URLSetContext>] {
 		urls.map { url in
-				.url(
-					.loc(url.url),
-					.lastmod(url.updatedAt),
-					.changefreq(url.changeFrequency),
-					.priority(url.priority)
-				)
+			.url(
+				.loc(url.url),
+				.lastmod(url.updatedAt),
+				.changefreq(url.changeFrequency),
+				.priority(url.priority)
+			)
 		}
 	}
 }
