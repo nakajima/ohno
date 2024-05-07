@@ -24,15 +24,20 @@ struct TagPage: WebPage {
 				.class("site-name")
 
 				H1(
-					Link("Tag: “\(tag)”", url: "/")
+					Link(url: "/") {
+						Span("Tag: ").class("subdue")
+						Text("“\(tag)”")
+					}
 				)
-				.class("subdue")
 			}
 
+			MarkdownText("---")
 			Div {
 				for post in posts {
 					PostRow(post: post)
+					MarkdownText("---")
 				}
+
 			}.class("posts")
 		} footer: {}
 	}

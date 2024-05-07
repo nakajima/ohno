@@ -24,7 +24,6 @@ struct HomePage: WebPage {
 					MarkdownText(blog.name)
 				}
 			)
-			.class("subdue")
 
 			Div {
 				MarkdownText("---")
