@@ -65,9 +65,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: v${{ github.ref }}
           body: |
-            Automated release v${{ github.ref }}
+            Automated release v${{ github.ref_name }}
           draft: false
           prerelease: false
       - name: Upload Release Asset
