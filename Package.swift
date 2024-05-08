@@ -36,9 +36,6 @@ let package = Package(
 				"Typographizer",
 				.product(name: "LilParser", package: "LilParser.swift"),
 				.product(name: "ArgumentParser", package: "swift-argument-parser"),
-			],
-			resources: [
-				.process("Resources/SF-Mono-Regular.otf"),
 			]
 		),
 		.testTarget(

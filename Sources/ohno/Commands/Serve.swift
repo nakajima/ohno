@@ -34,7 +34,6 @@ public struct Serve: AsyncParsableCommand {
 				nil
 			}
 
-			print(fileURL)
 			if let fileURL {
 				return try .init(statusCode: .ok, headers: headers, body: Data(contentsOf: fileURL))
 			} else {
@@ -71,60 +70,6 @@ public struct Serve: AsyncParsableCommand {
 				return "application/octet-stream"
 			}
 		}
-//
-		//		@Sendable func serve(_ webpage: any WebPage, blog: Blog) async throws -> HTTPResponse {
-		//			try await ServerResponse(blog: blog, page: webpage.page).response()
-		//		}
-//
-		//		await server.appendRoute("") { _ in
-		//			return try await serve(HomePage(blog: blog), blog: blog)
-		//		}
-//
-		//		await server.appendRoute("posts/*") { req in
-		//			guard let slug = req.path.split(separator: "/").last else {
-		//				print("not found")
-		//				return try await ServerResponse(blog: blog, html: "Nope", status: .notFound).response()
-		//			}
-//
-		//			let blogPost = try BlogPost.from(url: blog.local.posts.appending(path: slug + ".md"), in: blog)
-//
-		//			return try await serve(PostPage(post: blogPost), blog: blog)
-		//		}
-//
-		//		await server.appendRoute("images/*") { req in
-		//			if !req.path.hasSuffix(".png") {
-		//				return try await ServerResponse(blog: blog, html: "Not found", status: .notFound).response()
-		//			}
-//
-		//			guard let filename = req.path.split(separator: "/").last else {
-		//				return try await ServerResponse(blog: blog, html: "Nope", status: .notFound).response()
-		//			}
-//
-		//			let slug = filename.replacing(#/\.png$/#, with: "")
-		//			let blogPost = try BlogPost.from(url: blog.local.posts.appending(path: slug + ".md"), in: blog)
-//
-		//			if let code = blogPost.imageCode,
-		//				 let imageData = try await ImageGenerator(code: code).generate(size: .init(width: 600, height: 400), colors: try CSS().themeColors(from: blog.local.style)) {
-		//				var headers: [HTTPHeader: String] = [:]
-		//				headers[HTTPHeader.contentType] = "image/png"
-		//				return HTTPResponse(statusCode: .ok, headers: headers, body: imageData)
-		//			} else {
-		//				return try await ServerResponse(blog: blog, html: "Could not generate image.", status: .notFound).response()
-		//			}
-		//		}
-//
-		//		await server.appendRoute("tag/*") { req in
-		//			guard let tag = req.path.split(separator: "/").last else {
-		//				return try await ServerResponse(blog: blog, html: "Nope", status: .notFound).response()
-		//			}
-//
-		//			let posts = blog.posts().filter { $0.tags.contains(String(tag)) }
-		//			return try await serve(TagPage(blog: blog, tag: String(tag), posts: posts), blog: blog)
-		//		}
-//
-		//		await server.appendRoute("feed.xml") { req in
-		//			return try await ServerResponse(blog: blog, html: RSSPage(blog, posts: blog.posts()).body.render()).response(contentType: "application/rss+xml")
-		//		}
 
 		try await server.start()
 	}
