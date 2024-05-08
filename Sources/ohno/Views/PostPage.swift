@@ -37,7 +37,7 @@ struct PostPage: WebPage {
 		}
 	}
 
-	@ComponentBuilder func footer() -> some Component {
+	@ComponentBuilder func footer() -> ComponentGroup? {
 		Paragraph {
 			Text("Posted ")
 

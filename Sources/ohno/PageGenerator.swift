@@ -58,7 +58,7 @@ struct PageGenerator<Page: WebPage> {
 					.class("container"),
 					page.content().convertToNode(),
 					.footer(
-						page.footer().convertToNode(),
+						page.footer()?.convertToNode() ?? .empty,
 						MarkdownText(customFooter ?? "").convertToNode()
 					)
 				)

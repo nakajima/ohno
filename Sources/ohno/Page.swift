@@ -16,13 +16,12 @@ extension Never: Component {
 
 protocol WebPage {
 	associatedtype Content: Component
-	associatedtype Footer: Component
 
 	var title: String { get }
 	var opengraph: OpenGraph? { get }
 	@ComponentBuilder func content() -> Content
 	@ComponentBuilder func head() -> [Node<HTML.HeadContext>]
-	@ComponentBuilder func footer() -> Footer?
+	@ComponentBuilder func footer() -> ComponentGroup?
 }
 
 // Default conformances
@@ -37,14 +36,14 @@ extension WebPage {
 		Text("")
 	}
 
-	func footer() -> Never? {
+	func footer() -> ComponentGroup? {
 		nil
 	}
 }
 
 // Render
 extension WebPage {
-	func render(in blog: Blog, indentedBy indentationKind: Indentation.Kind? = nil) async throws -> String {
+	func render(in blog: Blog, indentedBy indentationKind: Indentation.Kind? = .none) async throws -> String {
 		try await PageGenerator(blog: blog, page: self).html().render(indentedBy: indentationKind)
 	}
 }
