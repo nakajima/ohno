@@ -1,12 +1,12 @@
 //
-//  Blog+Publish.swift
+//  File.swift
+//  
 //
-//
-//  Created by Pat Nakajima on 5/4/24.
+//  Created by Pat Nakajima on 5/8/24.
 //
 
-import Foundation
 import Plot
+import Foundation
 
 struct BlogBuilder {
 	let blog: Blog
@@ -85,15 +85,5 @@ struct BlogBuilder {
 	private func write(_ contents: String, to path: String) throws {
 		try? FileManager.default.createDirectory(at: destination.appending(path: path).deletingLastPathComponent(), withIntermediateDirectories: true)
 		try contents.write(to: destination.appending(path: path), atomically: true, encoding: .utf8)
-	}
-}
-
-extension Blog {
-	func build(in destination: URL? = nil) async throws {
-		let startTime = CFAbsoluteTimeGetCurrent()
-		var builder = BlogBuilder(blog: self, destination: destination ?? local.build)
-		try await builder.build()
-		let endTime = CFAbsoluteTimeGetCurrent()
-		print("Blog built in \(endTime - startTime) seconds.".green())
 	}
 }
