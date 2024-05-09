@@ -30,7 +30,7 @@ struct BlogBuilder {
 			try await write(PostPage(post: post).render(in: blog), to: "posts/\(post.slug)/index.html")
 			built(url: post.permalink, updatedAt: post.publishedAt, changeFrequency: .monthly, priority: 0.7)
 
-			if let code = post.imageCode, let imageData = try await ImageGenerator(code: code).generate(colors: CSS().themeColors(from: blog.local.style)) {
+			if let code = post.imageCode, let imageData = try await CodeImageGenerator(code: code).generate(colors: CSS().themeColors(from: blog.local.style)) {
 				try write(imageData, to: "images/\(post.slug).png")
 			}
 		}

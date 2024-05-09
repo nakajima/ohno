@@ -39,7 +39,7 @@ extension NSGraphicsContext {
 	}
 }
 
-struct ImageGenerator {
+struct CodeImageGenerator {
 	var code: String
 
 	init(code: String) {
@@ -102,30 +102,6 @@ struct ImageGenerator {
 		}
 
 		return pngData
-//
-		//		let context = NSGraphicsContext(size: contextRect.size)
-		//		NSGraphicsContext.current = context
-//
-		//		context.fill(with: theme.backgroundColor, in: contextRect)
-//
-		//		string.draw(in: CGRect(
-		//			x: padding,
-		//			y: padding,
-		//			width: stringSize.width,
-		//			height: stringSize.height
-		//		))
-//
-		//		let image = context.cgContext.makeImage()!
-		//		let url = URL.temporaryDirectory.appending(path: UUID().uuidString)
-//
-		//		let destination = CGImageDestinationCreateWithURL(url as CFURL, kUTTypePNG, 1, nil)!
-		//		CGImageDestinationAddImage(destination, image, nil)
-		//		CGImageDestinationFinalize(destination)
-//
-		//		let data = try Data(contentsOf: url)
-		//		try FileManager.default.removeItem(at: url)
-//
-		//		return data
 	}
 
 	private func color(from hex: HexColor) -> Splash.Color? {
