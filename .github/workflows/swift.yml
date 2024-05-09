@@ -80,3 +80,15 @@ jobs:
           asset_path: ./ohno.zip
           asset_name: ohno.zip
           asset_content_type: application/zip
+  homebrew:
+    needs: build
+    name: Bump Homebrew formula
+    runs-on: ubuntu-latest
+    environment: Env
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v3
+        with:
+          homebrew-tap: nakajima/homebrew-tap
+          download-url: https://github.com/nakajima/ohno/releases/download/${{ github.ref_name }}/ohno.zip
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
