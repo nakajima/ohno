@@ -25,6 +25,8 @@ jobs:
           submodules: recursive
       - name: Install gon
         run: brew install Bearer/tap/gon
+      - name: Write version file
+        run: echo 'let OhNoVersion = "v${{ github.ref_name }}"' > Sources/ohno/version.swift'
       - name: Build
         run: dev/build
       - name: Install the Apple certificate
