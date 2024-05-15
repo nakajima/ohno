@@ -21,7 +21,7 @@ public struct Edit: ParsableCommand {
 	}
 
 	@Argument(help: "Which post do you want to edit? Just a number will do (or the full post name)")
-	public var name: String = ""
+	public var name: String
 
 	@Option(help: "Where the blog lives if you're not currently in that directory") var path: String?
 
