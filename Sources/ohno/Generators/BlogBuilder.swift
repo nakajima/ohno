@@ -1,12 +1,12 @@
 //
-//  File.swift
-//  
+//  BlogBuilder.swift
+//
 //
 //  Created by Pat Nakajima on 5/8/24.
 //
 
-import Plot
 import Foundation
+import Plot
 
 struct BlogBuilder {
 	let blog: Blog

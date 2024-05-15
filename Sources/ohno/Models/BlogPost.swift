@@ -7,7 +7,7 @@
 
 import Foundation
 import Ink
-import LilParser
+import LilHTML
 import Splash
 import TOMLKit
 import Typographizer
@@ -15,7 +15,7 @@ import Typographizer
 extension Markdown {
 	var excerpt: String {
 		metadata["excerpt"] ?? {
-			let parser = Parser(html: html)
+			let parser = HTML(html: html)
 			if let parsed = try? parser.parse().get(),
 			   let firstParagraph = parsed.first(.p),
 			   let content = firstParagraph.textContent.presence
@@ -60,7 +60,27 @@ struct BlogPost: Codable, Hashable {
 			},
 		])
 
-		let markdown = try parser.parse(String(contentsOf: url))
+		var postMarkdown = try String(contentsOf: url)
+
+		// Hack around Ink not supporting footnotes
+		postMarkdown.replace(#/\[\^(\d+)\]((?:[^:]|$))/#) { match in
+			let number = match.output.1
+			return """
+			<sup><a id="footnote-link-\(number)" href="#footnote-\(number)">\(number)</a></sup>\(match.output.2)
+			"""
+		}
+		postMarkdown.replace(#/\[\^(\d+)\]:(.*)/#) { match in
+			let number = match.output.1
+			let comment = MarkdownText(String(match.output.2), debug: true).html
+			return """
+			<div class="footnote" id="footnote-\(number)">
+				<strong class="footnote-number">\(number).</strong>
+				<p>\(comment) <a class="back" href="#footnote-link-\(number)">↩</a></p>
+			</div>
+			"""
+		}
+
+		let markdown = parser.parse(postMarkdown)
 
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "MM/dd/yyyy"

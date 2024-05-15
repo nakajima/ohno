@@ -7,21 +7,29 @@
 
 import Foundation
 import Ink
-import LilParser
+import LilHTML
 import Plot
 
 struct MarkdownText: Component {
 	var markdown: String
+	var debug: Bool = false
 
-	init(_ markdown: String) {
+	init(_ markdown: String, debug: Bool = false) {
 		self.markdown = markdown
+		self.debug = debug
 	}
 
 	var html: String {
 		let html = MarkdownParser().parse(markdown).html
 
 		// Get rid of the wrapping P
-		if let parsed = try? Parser(html: html).parse().get() {
+		if let parsed = try? HTML(html: html).parse().get() {
+			for p in parsed.find(.p) {
+				if p.childNodes.isEmpty {
+					p.remove()
+				}
+			}
+
 			return parsed.innerHTML
 		} else {
 			return html

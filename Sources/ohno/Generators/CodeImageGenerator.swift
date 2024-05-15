@@ -1,5 +1,5 @@
 //
-//  ImageGenerator.swift
+//  CodeImageGenerator.swift
 //
 //
 //  Created by Pat Nakajima on 5/6/24.

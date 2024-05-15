@@ -1,5 +1,5 @@
 {
-  "originHash" : "1d4627561df280d3f8af2c51fedd8118cc3a27eb7ce693da774eeab9f1f9c6be",
+  "originHash" : "acf333ff8eabd3b81cac1f9e12658e3a3fcf4830c10e4bc123967d7e4f76e13e",
   "pins" : [
     {
       "identity" : "flyingfox",
@@ -20,12 +20,12 @@
       }
     },
     {
-      "identity" : "lilparser.swift",
+      "identity" : "lilhtml.swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/nakajima/LilParser.swift",
+      "location" : "https://github.com/nakajima/LilHTML.swift",
       "state" : {
         "branch" : "main",
-        "revision" : "362e1218a2a6958183fbbe14b071d9d17f9954c9"
+        "revision" : "be65e75131f5cb7b49e46b06525c47f553efdeae"
       }
     },
     {

@@ -19,7 +19,7 @@ let package = Package(
 		.package(url: "https://github.com/JohnSundell/Ink", branch: "master"),
 		.package(url: "https://github.com/JohnSundell/Splash", branch: "master"),
 		.package(url: "https://github.com/swhitty/FlyingFox", branch: "main"),
-		.package(url: "https://github.com/nakajima/LilParser.swift", branch: "main"),
+		.package(url: "https://github.com/nakajima/LilHTML.swift", branch: "main"),
 		.package(url: "https://github.com/nakajima/Typographizer", branch: "main"),
 	],
 	targets: [
@@ -34,7 +34,7 @@ let package = Package(
 				"Ink",
 				"Splash",
 				"Typographizer",
-				.product(name: "LilParser", package: "LilParser.swift"),
+				.product(name: "LilHTML", package: "LilHTML.swift"),
 				.product(name: "ArgumentParser", package: "swift-argument-parser"),
 			]
 		),
