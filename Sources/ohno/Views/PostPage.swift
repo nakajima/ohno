@@ -33,12 +33,21 @@ struct PostPage: WebPage {
 				MarkdownText(post.title)
 			}
 
+			if let prologue = post.prologue {
+				ComponentGroup {
+					Node.small(MarkdownText(prologue).convertToNode(), .class("prologue"))
+				}
+			}
+
 			ComponentGroup(html: MarkdownDecorator().decorate(post.contents))
 		}
+		.class("post-body")
 	}
 
 	@ComponentBuilder func footer() -> ComponentGroup? {
 		Paragraph {
+			MarkdownText("---")
+
 			Text("Posted ")
 
 			Time(datetime: post.publishedAt.formatted(.iso8601)) {
@@ -53,7 +62,5 @@ struct PostPage: WebPage {
 				}
 			}
 		}
-
-		MarkdownText("---")
 	}
 }

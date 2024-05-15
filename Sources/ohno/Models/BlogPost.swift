@@ -42,6 +42,7 @@ struct BlogPost: Codable, Hashable {
 	let author: String?
 	let publishedAt: Date
 	let tags: [String]
+	let prologue: String?
 
 	var imageCode: String?
 
@@ -61,6 +62,12 @@ struct BlogPost: Codable, Hashable {
 		])
 
 		var postMarkdown = try String(contentsOf: url)
+
+		postMarkdown.replace(#/--- SECTION/#) { _ in
+			"""
+			<hr class="section-break" />
+			"""
+		}
 
 		// Hack around Ink not supporting footnotes
 		postMarkdown.replace(#/\[\^(\d+)\]((?:[^:]|$))/#) { match in
@@ -98,7 +105,8 @@ struct BlogPost: Codable, Hashable {
 			contents: markdown.html,
 			publishedAt: publishedAt,
 			tags: markdown.metadata["tags", default: ""].split(separator: #/,\s*/#).map(String.init),
-			imageCode: imageCode
+			imageCode: imageCode,
+			prologue: markdown.metadata["prologue"]
 		)
 	}
 
@@ -111,7 +119,8 @@ struct BlogPost: Codable, Hashable {
 		contents: String,
 		publishedAt: Date,
 		tags: [String],
-		imageCode: String? = nil
+		imageCode: String? = nil,
+		prologue: String? = nil
 	) {
 		self.blog = blog
 		self.title = title.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
@@ -122,6 +131,7 @@ struct BlogPost: Codable, Hashable {
 		self.publishedAt = publishedAt
 		self.tags = tags
 		self.imageCode = imageCode
+		self.prologue = prologue
 	}
 
 	var hasImage: Bool {
