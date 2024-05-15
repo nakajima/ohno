@@ -82,7 +82,7 @@ struct BlogPost: Codable, Hashable {
 			return """
 			<div class="footnote" id="footnote-\(number)">
 				<strong class="footnote-number">\(number).</strong>
-				<p>\(comment) <a class="back" href="#footnote-link-\(number)">↩</a></p>
+				<p>\(comment) <a class="back" href="#footnote-link-\(number)"><small>Back to post</small> &hookleftarrow;&#xFE0E;</a></p>
 			</div>
 			"""
 		}
