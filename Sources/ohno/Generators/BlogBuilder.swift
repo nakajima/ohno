@@ -60,7 +60,8 @@ struct BlogBuilder {
 		try write(Robots(blog: blog).body, to: "robots.txt")
 
 		if let customCSS = try? String(contentsOf: blog.local.style) {
-			try write(customCSS, to: "style.css")
+			let minified = CSSMinifier.minify(css: customCSS)
+			try write(minified, to: "style.css")
 		}
 
 		if FileManager.default.fileExists(atPath: blog.local.public.path) {
