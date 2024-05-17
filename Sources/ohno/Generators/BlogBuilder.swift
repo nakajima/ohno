@@ -41,7 +41,7 @@ struct BlogBuilder {
 		case _ where file.contains("/public/"):
 			print("Syncing public".green())
 			try buildPublic()
-		case _ where filename.hasSuffix("codenotes.js"):
+		case _ where filename.hasSuffix("codenotes.js.swift"):
 			print("Building codenotes.js".green())
 			try buildCodeNotesJS()
 		default:
@@ -128,7 +128,7 @@ struct BlogBuilder {
 	func buildCodeNotesJS() throws {
 		let codenotesURL = destination.appending(path: "_codenotes.js")
 		try? FileManager.default.removeItem(at: codenotesURL)
-		try FileManager.default.copyItem(at: Bundle.module.url(forResource: "codenotes", withExtension: "js")!, to: codenotesURL)
+		try write(codeNotesJS, to: codenotesURL.path)
 	}
 
 	mutating func built(url: String, updatedAt: Date, changeFrequency: SiteMapChangeFrequency, priority: Double) {

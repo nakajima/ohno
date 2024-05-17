@@ -1,3 +1,4 @@
+let codeNotesJS = """
 document.addEventListener("click", function (event) {
   const target = event.target.closest(".code-note-button, .code-note-code");
 
@@ -26,3 +27,4 @@ document.addEventListener("click", function (event) {
     }
   }
 });
+"""
