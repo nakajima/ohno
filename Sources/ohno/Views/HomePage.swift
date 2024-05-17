@@ -37,6 +37,12 @@ struct HomePage: WebPage {
 		)
 	}
 
+	func head() -> [Node<HTML.HeadContext>] {
+		return [
+			.link(.rel(.alternate), .type("application/rss+xml"), .title("patstechweblog.com feed"), .href("https://patstechweblog.com/feed.xml"))
+		]
+	}
+
 	func content() -> some Component {
 		Div {
 			H1(
