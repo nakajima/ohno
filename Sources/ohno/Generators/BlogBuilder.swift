@@ -29,12 +29,14 @@ struct BlogBuilder {
 			print("Rebuilding CSS".green())
 			try buildCSS()
 		case _ where filename.hasSuffix(".md"):
-			if let post = blog.posts().first(where: { $0.permalink.hasSuffix(filename) }) {
-				print("Rebuilding \(post.title)".green())
+			if let post = blog.posts().first(where: { $0.filename == filename }) {
+				print("Rebuilding post: \(filename)".green())
 				try await buildPost(post: post)
 				try await buildTags()
 				try await buildHome()
 				try await buildRSS()
+			} else {
+				fallthrough
 			}
 		case _ where file.contains("/public/"):
 			print("Syncing public".green())

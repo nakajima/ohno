@@ -18,7 +18,11 @@ public struct Serve: AsyncParsableCommand {
 	public mutating func run() async throws {
 		let server = HTTPServer(port: 8080, logger: .print(category: "ohno"))
 		let blog = try Blog.current(with: path)
-		let builder = BlogBuilder(blog: blog, destination: blog.local.serve)
+		var blogBuilder = BlogBuilder(blog: blog, destination: blog.local.serve)
+
+		// Build the whole thing once right off the bat
+		try await blogBuilder.build()
+		let builder = blogBuilder
 
 		let fileWatcher = FileWatcher([
 			blog.location.path,

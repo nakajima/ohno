@@ -15,6 +15,14 @@ struct CodeNote {
 	var indentation: String
 	var lines: [String] = []
 
+	func titleContent() -> String {
+		let result = lines.map {
+			$0.replacing(#/[\s\t]*\/\/\/\s*/#, with: "")
+		}.joined(separator: "\n\n")
+
+		return result.replacing(#"""#, with: #"\""#)
+	}
+
 	func content() -> String {
 		let content = lines.map { $0.replacing(#/[\s\t]*\/\/\//#, with: "") }
 			.joined(separator: "\n")
@@ -116,10 +124,10 @@ extension Modifier {
 					if let note = codeNotes[lineNumber] {
 						let lineWithoutIndentation = line.replacing(#/^[\s\t]*/#, with: "")
 						result += """
-						<div class="code-note-container">\(note.indentation)<mark class="has-code-note code-note-code" href="#code-note-\(note.lineNumber)" >\(lineWithoutIndentation)</mark>
+						<div class="code-note-container">\(note.indentation)<mark title="\(note.titleContent())" class="has-code-note code-note-code" href="#code-note-\(note.lineNumber)" >\(lineWithoutIndentation)</mark>
 						"""
 						result += """
-						<a href="#code-note-\(note.lineNumber)" class="code-note-button" type="button">Show</a><aside class="code-note" id="code-note-\(note.lineNumber)"><div class="code-note-content"><code class="code-note-indentation">\(note.indentation)</code><div>\(note.content())</div></div></aside></div>
+						<a title="\(note.titleContent())" href="#code-note-\(note.lineNumber)" class="code-note-button" type="button">Hide</a><aside class="code-note expanded" id="code-note-\(note.lineNumber)"><div class="code-note-content"><code class="code-note-indentation">\(note.indentation)</code><div>\(note.content())</div></div></aside></div>
 						""".trimmingCharacters(in: .whitespacesAndNewlines)
 					} else {
 						result += line

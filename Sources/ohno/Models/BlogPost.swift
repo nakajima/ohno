@@ -127,7 +127,7 @@ struct BlogPost: Codable, Hashable {
 		self.excerpt = excerpt.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
 		self.slug = slug
 		self.author = author
-		self.contents = contents.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
+		self.contents = contents
 		self.publishedAt = publishedAt
 		self.tags = tags
 		self.imageCode = imageCode
@@ -140,6 +140,10 @@ struct BlogPost: Codable, Hashable {
 		}
 
 		return !imageCode.isBlank
+	}
+
+	var filename: String {
+		slug + ".md"
 	}
 
 	var permalink: String {
@@ -162,7 +166,7 @@ struct BlogPost: Codable, Hashable {
 			.splashCodeBlocks(withFormat: HTMLOutputFormat(), context: context),
 		])
 
-		return parser.parse(contents).html
+		return parser.parse(contents).html.typographized(language: Locale.current.language.minimalIdentifier, isHTML: true, ignore: ["`"])
 	}
 
 	func toText() throws -> String {
