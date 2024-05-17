@@ -128,7 +128,7 @@ struct BlogBuilder {
 	func buildCodeNotesJS() throws {
 		let codenotesURL = destination.appending(path: "_codenotes.js")
 		try? FileManager.default.removeItem(at: codenotesURL)
-		try write(codeNotesJS, to: codenotesURL.path)
+		try write(codeNotesJS, to: "_codenotes.js")
 	}
 
 	mutating func built(url: String, updatedAt: Date, changeFrequency: SiteMapChangeFrequency, priority: Double) {
@@ -147,6 +147,8 @@ struct BlogBuilder {
 
 		try await buildHome()
 		built(url: blog.links.home.absoluteString, updatedAt: posts.first?.publishedAt ?? Date(), changeFrequency: .weekly, priority: 1)
+
+		try buildCSS()
 
 		try await buildRSS()
 		built(url: blog.links.feed.absoluteString, updatedAt: posts.first?.publishedAt ?? Date(), changeFrequency: .weekly, priority: 0.2)
