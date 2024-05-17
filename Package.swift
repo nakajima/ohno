@@ -36,6 +36,9 @@ let package = Package(
 				"Typographizer",
 				.product(name: "LilHTML", package: "LilHTML.swift"),
 				.product(name: "ArgumentParser", package: "swift-argument-parser"),
+			],
+			resources: [
+				.copy("Resources/codenotes.js"),
 			]
 		),
 		.testTarget(

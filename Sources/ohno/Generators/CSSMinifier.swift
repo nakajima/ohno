@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  CSSMinifier.swift
+//
 //
 //  Created by Pat Nakajima on 5/16/24.
 //
@@ -43,7 +43,7 @@ struct CSSMinifier {
 
 	static func minify(css: String) -> String {
 		var minifier = CSSMinifier(css: css)
-		return minifier.minified()
+		return measure("CSSMinify") { minifier.minified() }
 	}
 
 	mutating func next() -> Character? {
@@ -133,7 +133,7 @@ struct CSSMinifier {
 
 	mutating func consumeWhitespace() {
 		while let char = peek(), char == Self.tabCharacter || char == Self.spaceCharacter || char == Self.newlineCharacter {
-			_ = self.next()
+			_ = next()
 		}
 	}
 }

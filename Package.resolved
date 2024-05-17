@@ -1,5 +1,5 @@
 {
-  "originHash" : "acf333ff8eabd3b81cac1f9e12658e3a3fcf4830c10e4bc123967d7e4f76e13e",
+  "originHash" : "544296d38e7ede095f5acc4d03c70546ef683a7fe6c4eb62523a36ec85a07e55",
   "pins" : [
     {
       "identity" : "flyingfox",
@@ -70,7 +70,7 @@
       "location" : "https://github.com/nakajima/Typographizer",
       "state" : {
         "branch" : "main",
-        "revision" : "95739aeb9649b836ff3c45ebf34ea51e788532c6"
+        "revision" : "896f76a4f1cf59ad1c243aaf72f81ddbd85b99a1"
       }
     }
   ],

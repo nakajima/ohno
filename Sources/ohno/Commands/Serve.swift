@@ -18,10 +18,25 @@ public struct Serve: AsyncParsableCommand {
 	public mutating func run() async throws {
 		let server = HTTPServer(port: 8080, logger: .print(category: "ohno"))
 		let blog = try Blog.current(with: path)
+		let builder = BlogBuilder(blog: blog, destination: blog.local.serve)
+
+		let fileWatcher = FileWatcher([
+			blog.location.path,
+		], { change in
+			if change.path.contains(".serve") {
+				return
+			}
+
+			Task {
+				if change.fileChange || change.fileCreated || change.fileModified {
+					try await builder.rebuild(file: change.path)
+				}
+			}
+		}, .main)
+
+		fileWatcher.start()
 
 		await server.appendRoute("*") { req in
-			try await blog.build(in: blog.local.serve)
-
 			var headers: [HTTPHeader: String] = [:]
 			headers[HTTPHeader.contentType] = makeContentType(String(req.path.split(separator: "/").last ?? ""))
 

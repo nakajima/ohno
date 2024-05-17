@@ -36,7 +36,7 @@ struct BlogPost: Codable, Hashable {
 	let blog: Blog
 	var title: String
 	var excerpt: String
-	var contents: String
+	private var contents: String
 
 	let slug: String
 	let author: String?
@@ -56,7 +56,7 @@ struct BlogPost: Codable, Hashable {
 					return heading.html
 				}
 			},
-			.splashCodeBlocks(withFormat: HTMLOutputFormat()) { code in
+			.splashCodeBlocks(withFormat: HTMLOutputFormat(), context: .html) { code in
 				imageCode = code
 			},
 		])
@@ -102,7 +102,7 @@ struct BlogPost: Codable, Hashable {
 			excerpt: markdown.excerpt,
 			slug: url.deletingPathExtension().lastPathComponent,
 			author: markdown.metadata["author"] ?? blog.author ?? "",
-			contents: markdown.html,
+			contents: postMarkdown,
 			publishedAt: publishedAt,
 			tags: markdown.metadata["tags", default: ""].split(separator: #/,\s*/#).map(String.init),
 			imageCode: imageCode,
@@ -148,6 +148,21 @@ struct BlogPost: Codable, Hashable {
 		}
 
 		return url.appending(path: "posts/\(slug)").absoluteString
+	}
+
+	func html(context: RenderingContext) -> String {
+		let parser = MarkdownParser(modifiers: [
+			.init(target: .headings) { heading in
+				if heading.html.contains("<h1>") {
+					return ""
+				} else {
+					return heading.html
+				}
+			},
+			.splashCodeBlocks(withFormat: HTMLOutputFormat(), context: context),
+		])
+
+		return parser.parse(contents).html
 	}
 
 	func toText() throws -> String {

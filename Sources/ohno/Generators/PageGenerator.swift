@@ -37,6 +37,8 @@ struct HeadGenerator<Page: WebPage> {
 			nodes.append(.raw(customHead))
 		}
 
+		nodes.append(contentsOf: page.head())
+
 		return nodes
 	}
 }

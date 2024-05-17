@@ -9,6 +9,10 @@ import Foundation
 import Plot
 import Splash
 
+enum RenderingContext {
+	case html, rss
+}
+
 struct PostPage: WebPage {
 	var post: BlogPost
 
@@ -18,6 +22,14 @@ struct PostPage: WebPage {
 
 	var opengraph: OpenGraph? {
 		post.opengraph
+	}
+
+	func head() -> [Node<HTML.HeadContext>] {
+		if post.html(context: .html).contains("code-note-button") {
+			return [.script(.src("/_codenotes.js"))]
+		} else {
+			return []
+		}
 	}
 
 	@ComponentBuilder func content() -> some Component {
@@ -39,7 +51,7 @@ struct PostPage: WebPage {
 				}
 			}
 
-			ComponentGroup(html: MarkdownDecorator().decorate(post.contents))
+			ComponentGroup(html: MarkdownDecorator().decorate(post.html(context: .html)))
 		}
 		.class("post-body")
 	}
