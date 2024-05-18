@@ -21,6 +21,7 @@ let package = Package(
 		.package(url: "https://github.com/swhitty/FlyingFox", branch: "main"),
 		.package(url: "https://github.com/nakajima/LilHTML.swift", branch: "main"),
 		.package(url: "https://github.com/nakajima/Typographizer", branch: "main"),
+		.package(url: "https://github.com/nakajima/EmbedResources.swift", branch: "main")
 	],
 	targets: [
 		// Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -36,6 +37,12 @@ let package = Package(
 				"Typographizer",
 				.product(name: "LilHTML", package: "LilHTML.swift"),
 				.product(name: "ArgumentParser", package: "swift-argument-parser"),
+			],
+			resources: [
+				.process("Resources/codenotes.js")
+			],
+			plugins: [
+				.plugin(name: "EmbedResourcesPlugin", package: "EmbedResources.swift")
 			]
 		),
 		.testTarget(

@@ -1,13 +1,22 @@
 {
-  "originHash" : "b96c6741f9618e5101dc4ce117955fda6d3c331727a739f110a54a72cecf70cd",
+  "originHash" : "abe7803977e2843c79b493f51d64c5ce6429e665413949ccca24a2624a385116",
   "pins" : [
+    {
+      "identity" : "embedresources.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nakajima/EmbedResources.swift",
+      "state" : {
+        "branch" : "main",
+        "revision" : "e72b631d137ad25a03ec4a94f90c3c538603a8ed"
+      }
+    },
     {
       "identity" : "flyingfox",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swhitty/FlyingFox",
       "state" : {
         "branch" : "main",
-        "revision" : "1381625e3ae337903aff573f8fc621e8dd5a6f6d"
+        "revision" : "b3f2ed19bd05d1228949a5548efce06a69850143"
       }
     },
     {
@@ -52,7 +61,7 @@
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
         "branch" : "main",
-        "revision" : "7f4ce2deef0560c69fa0462a4e67c311e259ccb2"
+        "revision" : "29b3d39e163d5ddfd4c710cde34bb036497b991b"
       }
     },
     {
